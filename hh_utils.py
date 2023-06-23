@@ -1,13 +1,13 @@
 import requests
 
 
-def get_my_companies_from_hh():
+def get_companies_from_hh(area_id: str) -> list[dict]:
     """ Возвращает список с данными по компаниям"""
     # описание API https://api.hh.ru/openapi/redoc#tag/Rabotodatel/operation/get-employer-info
 
     url = 'https://api.hh.ru/employers'
-    area = '1' # 1 - Москва
-    company_with_vacancies = True # только те, у кого есть вакансии
+    area = area_id  # 1 - Москва, 63- Саранск
+    company_with_vacancies = True  # только те, у кого есть вакансии
     per_page = 100
     page = 0
     result = []
@@ -18,7 +18,7 @@ def get_my_companies_from_hh():
             'only_with_vacancies': company_with_vacancies,
             'per_page': per_page,
             'page': page
-            }
+        }
         response = requests.get(url, params=params)
         data = response.json()
         if 'items' in data:
@@ -34,9 +34,4 @@ def get_my_companies_from_hh():
             print('Все страницы получены')
             break
         page += 1
-
-
-
-
-
-get_my_companies_from_hh()
+    return result

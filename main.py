@@ -1,11 +1,12 @@
-
-
+import hh_utils as utils
+from config import config
 
 def main():
+    params = config()
 
-    get_my_companies_from_hh()
-    create_db()
-    save_my_companies_to_db()
+    utils.get_companies_from_hh('63')
+    create_db('HeadHunter', params)
+    save_10random_companies_to_db()
 
     get_vacancies_from_hh()
     save_vacancies_to_db()
