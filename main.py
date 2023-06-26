@@ -10,9 +10,8 @@ def main():
     random_10_companies = utils.get_10random_companies_data(data)
     utils.create_db('headhunter', params)
     utils.save_10random_companies_to_db(random_10_companies, 'headhunter', params)
-
     vacancies = utils.get_vacancies_from_hh(random_10_companies)
-    utils.save_vacancies_to_db(vacancies)
+    utils.save_vacancies_to_db(vacancies, 'headhunter', params)
 
 
 
