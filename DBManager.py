@@ -46,16 +46,22 @@ class DBManager:
     def get_all_vacancies(self):
         """Получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на
         вакансию"""
-        pass
+        query_name = "get_all_vacancies"
+        return self.execute_query(query_name)
 
     def get_avg_salary(self):
         """Получает среднюю зарплату по вакансиям"""
-        pass
+        query_name = "get_avg_salary"
+        return self.execute_query(query_name)
 
     def get_vacancies_with_higher_salary(self):
         """Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям"""
-        pass
+        query_name = "get_vacancies_with_higher_salary"
+        return self.execute_query(query_name)
 
-    def get_vacancies_with_keyword(self):
+    def get_vacancies_with_keyword(self, words: list[str]):
         """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
-        pass
+        query_name = "get_vacancies_with_keyword"
+        return self.execute_query(query_name, words)
+
+
