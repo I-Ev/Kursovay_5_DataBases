@@ -16,4 +16,4 @@ SELECT * FROM vacancy WHERE salary_to > (SELECT AVG(salary_to) FROM vacancy);
 
 -- Запрос на получение списка всех вакансий, в названии которых содержатся переданные в метод слова
 --get_vacancies_with_keyword
-SELECT * FROM vacancy WHERE (name or requirement or responsibility) in (word);
+SELECT * FROM vacancy WHERE vacancy_title ILIKE ANY(ARRAY[%s]);
