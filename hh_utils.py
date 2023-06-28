@@ -4,12 +4,12 @@ import psycopg2
 import requests
 
 
-def get_companies_from_hh(area_id: str) -> list[dict[str, Any]]:
+def get_companies_from_hh(area_id: str = '1') -> list[dict[str, Any]]:
     """ Возвращает список с данными по компаниям"""
     # описание API https://api.hh.ru/openapi/redoc#tag/Rabotodatel/operation/get-employer-info
 
     url = 'https://api.hh.ru/employers'
-    area = area_id  # 1 - Москва, 63- Саранск
+    area = area_id
     company_with_vacancies = True  # только те, у кого есть вакансии
     per_page = 100
     page = 0
@@ -156,28 +156,33 @@ def save_vacancies_to_db(vacancies: list[dict[str, Any]], db_name: str, params: 
     with psycopg2.connect(dbname=db_name, **params) as conn:
         with conn.cursor() as cur:
             for vanancy in vacancies:
-                cur.execute("""
-                    INSERT INTO vacancy (id, 
-                    name,
-                    area,
-                    salary_from,
-                    salary_to,
-                    salary_currency,
-                    is_gross,
-                    is_premium,
-                    type,
-                    published_date,
-                    is_archived,
-                    requirement,
-                    responsibility,
-                    experience,
-                    employment,
-                    url,
-                    company_id)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (vanancy['id'], vanancy['name'], vanancy['area']['name'], vanancy['salary']['from'], vanancy['salary']['to'],
-                          vanancy['salary']['currency'], vanancy['salary']['gross'], vanancy['premium'], vanancy['type']['name'],
-                          vanancy['published_at'], vanancy['archived'], vanancy['snippet']['requirement'], vanancy['snippet']['responsibility'],
-                          vanancy['experience']['name'], vanancy['employment']['name'], vanancy['alternate_url'], vanancy['employer']['id']))
+                # добавил блок try так как есть вакансии у которых salary = None и это не словарь
+                # и возникала TypeError: 'NoneType' object is not subscriptable
+                try:
+                    cur.execute("""
+                        INSERT INTO vacancy (id, 
+                        name,
+                        area,
+                        salary_from,
+                        salary_to,
+                        salary_currency,
+                        is_gross,
+                        is_premium,
+                        type,
+                        published_date,
+                        is_archived,
+                        requirement,
+                        responsibility,
+                        experience,
+                        employment,
+                        url,
+                        company_id)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """, (vanancy['id'], vanancy['name'], vanancy['area']['name'], vanancy['salary']['from'], vanancy['salary']['to'],
+                              vanancy['salary']['currency'], vanancy['salary']['gross'], vanancy['premium'], vanancy['type']['name'],
+                              vanancy['published_at'], vanancy['archived'], vanancy['snippet']['requirement'], vanancy['snippet']['responsibility'],
+                              vanancy['experience']['name'], vanancy['employment']['name'], vanancy['alternate_url'], vanancy['employer']['id']))
+                except TypeError:
+                    continue
             conn.commit()
             print('\nВакансии успешно сохранены в БД')

@@ -6,19 +6,18 @@ class DBManager:
     """Класс для работы и подключения к БД"""
 
     def __init__(self, db_name: str = 'headhunter', params: dict = config()):
-        self.database_name = db_name
-        self.params = params
-        self.query_file = "queries.sql"
+        self.__database_name = db_name
+        self.__params = params
+        self.__query_file = "queries.sql"
 
     def get_connection(self):
-        # return psycopg2.connect(self.database_name, **self.params)
-        return psycopg2.connect(**self.params)
+        return psycopg2.connect(self.__params)
 
     def execute_query(self, query_name, *args):
         connection = self.get_connection()
         cursor = connection.cursor()
 
-        with open(self.query_file, 'r', encoding='UTF-8') as file:
+        with open(self.__query_file, 'r', encoding='UTF-8') as file:
             queries = file.read().split(';')
 
         query = None
@@ -64,7 +63,4 @@ class DBManager:
         # query_name = "get_vacancies_with_keyword"
         # return self.execute_query(query_name, words)
         query_name = "get_vacancies_with_keyword"
-        query = self.execute_query(query_name, keyword)
-        return query.fetchall()
-
-
+        return self.execute_query(query_name, words)
