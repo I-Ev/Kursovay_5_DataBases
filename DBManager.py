@@ -61,7 +61,10 @@ class DBManager:
 
     def get_vacancies_with_keyword(self, words: list[str]):
         """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
+        # query_name = "get_vacancies_with_keyword"
+        # return self.execute_query(query_name, words)
         query_name = "get_vacancies_with_keyword"
-        return self.execute_query(query_name, words)
+        query = self.execute_query(query_name, keyword)
+        return query.fetchall()
 
 
