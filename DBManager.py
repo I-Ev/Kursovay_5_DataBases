@@ -11,7 +11,10 @@ class DBManager:
         self.__query_file = "queries.sql"
 
     def get_connection(self):
-        return psycopg2.connect(self.__params)
+        params_with_db = self.__params.copy()
+        params_with_db['dbname'] = self.__database_name
+        return psycopg2.connect(**params_with_db)
+        # return psycopg2.connect(self.__params)
 
     def execute_query(self, query_name, *args):
         connection = self.get_connection()
@@ -58,9 +61,13 @@ class DBManager:
         query_name = "get_vacancies_with_higher_salary"
         return self.execute_query(query_name)
 
+    # def get_vacancies_with_keyword(self, *words: str):
+    #     """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
+    #     query_name = "get_vacancies_with_keyword"
+    #     keywords = "%".join(words)
+    #     return self.execute_query(query_name, keywords)
+
     def get_vacancies_with_keyword(self, words: list[str]):
         """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
-        # query_name = "get_vacancies_with_keyword"
-        # return self.execute_query(query_name, words)
         query_name = "get_vacancies_with_keyword"
-        return self.execute_query(query_name, words)
+        return self.execute_query(query_name, tuple(words))

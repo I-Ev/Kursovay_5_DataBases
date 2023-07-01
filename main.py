@@ -1,4 +1,3 @@
-from DBManager import DBManager
 import hh_utils as utils
 from config import config
 
@@ -28,5 +27,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    dm = DBManager('headhunter')
-    print(dm.get_connection())
+
