@@ -61,13 +61,20 @@ class DBManager:
         query_name = "get_vacancies_with_higher_salary"
         return self.execute_query(query_name)
 
-    # def get_vacancies_with_keyword(self, *words: str):
-    #     """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
-    #     query_name = "get_vacancies_with_keyword"
-    #     keywords = "%".join(words)
-    #     return self.execute_query(query_name, keywords)
-
-    def get_vacancies_with_keyword(self, words: list[str]):
+    def get_vacancies_with_keyword(self, *words: str):
         """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
-        query_name = "get_vacancies_with_keyword"
-        return self.execute_query(query_name, tuple(words))
+        tuple_words = tuple(['%' + word + '%' for word in words])
+        if len(words) == 1:
+            query_name = "get_vacancies_with_keyword"
+            return self.execute_query(query_name, tuple_words)
+        else:
+            query_name = "get_vacancies_with_keyword"
+            return self.execute_query(query_name, tuple_words)
+
+        # connection = self.get_connection()
+        # cursor = connection.cursor()
+        # query = f"SELECT * FROM vacancy WHERE {' OR '.join([f'name ILIKE %s' for _ in words])}"
+        # params = tuple(['%' + word + '%' for word in words])
+        # rows = cursor.execute(query, params)
+        # result = cursor.fetchall()
+        # return result
